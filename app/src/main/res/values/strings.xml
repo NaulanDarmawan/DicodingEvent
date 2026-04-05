@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">DicodingEvent</string>
+    <string name="home">Home</string>
+    <string name="active">Active</string>
+    <string name="finished">Finished</string>
+    <string name="buka_link_registrasi">Buka Link Registrasi</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="finished_events">Finished Events</string>
+    <string name="foto_event">Foto Event</string>
+
+    <string name="organizer_format">Penyelenggara: %1$s</string>
+    <string name="time_format">Waktu: %1$s</string>
+    <string name="quota_format">Sisa Kuota: %1$d</string>
+    <string name="search_result_format">Hasil Pencarian: %1$s</string>
+</resources>
