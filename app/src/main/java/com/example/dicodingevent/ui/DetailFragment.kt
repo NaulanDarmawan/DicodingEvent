@@ -5,18 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.example.dicodingevent.R
+import com.example.dicodingevent.data.local.entity.FavoriteEvent
 import com.example.dicodingevent.data.response.ListEventsItem
 import com.example.dicodingevent.databinding.FragmentDetailBinding
-import androidx.core.net.toUri
 
 class DetailFragment : Fragment() {
 
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: EventViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
@@ -29,9 +33,7 @@ class DetailFragment : Fragment() {
         // Ambil ID dari argumen Navigation
         val eventId = arguments?.getString("eventId") ?: ""
 
-        val viewModel = ViewModelProvider(this)[EventViewModel::class.java]
-
-        // Panggil fungsi untuk ambil detail (kita akan buat fungsinya di ViewModel)
+        // Panggil fungsi untuk ambil detail
         viewModel.getDetailEvent(eventId)
 
         viewModel.detailEvent.observe(viewLifecycleOwner) { event ->
@@ -68,6 +70,39 @@ class DetailFragment : Fragment() {
         binding.btnRegister.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, event.link.toUri())
             startActivity(intent)
+        }
+
+        // ================= LOGIKA FAVORIT =================
+
+        // 1. Siapkan data untuk dimasukkan ke database
+        val favoriteEvent = FavoriteEvent(
+            id = event.id.toString(),
+            name = event.name,
+            mediaCover = event.mediaCover
+        )
+
+        var isFavorite = false
+
+        // 2. Cek apakah event ini sudah ada di database favorit
+        viewModel.getFavoriteEventById(event.id.toString()).observe(viewLifecycleOwner) { favEvent ->
+            if (favEvent != null) {
+                // Jika sudah favorit, pakai ikon hati penuh
+                isFavorite = true
+                binding.fabFavorite.setImageResource(R.drawable.ic_favorite)
+            } else {
+                // Jika belum favorit, pakai ikon hati kosong
+                isFavorite = false
+                binding.fabFavorite.setImageResource(R.drawable.ic_favorite_border)
+            }
+        }
+
+        // 3. Aksi ketika tombol hati diklik
+        binding.fabFavorite.setOnClickListener {
+            if (isFavorite) {
+                viewModel.deleteFavoriteEvent(favoriteEvent)
+            } else {
+                viewModel.insertFavoriteEvent(favoriteEvent)
+            }
         }
     }
 

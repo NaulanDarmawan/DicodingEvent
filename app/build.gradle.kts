@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -64,6 +66,18 @@ dependencies {
     // 4. Navigation Component (Untuk Fragment & Bottom Navigation)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // 5. Room Database (Untuk fitur Favorite)
+    val roomVersion = "2.7.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+
+    // 6. DataStore Preferences (Untuk fitur Setting Tema)
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // 7. WorkManager (Untuk fitur Daily Reminder)
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
 
 kotlin {

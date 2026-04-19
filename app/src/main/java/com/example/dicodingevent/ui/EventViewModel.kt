@@ -4,11 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dicodingevent.data.EventRepository
 import com.example.dicodingevent.data.response.ListEventsItem
 import com.example.dicodingevent.data.retrofit.ApiConfig
 import kotlinx.coroutines.launch
+import com.example.dicodingevent.data.local.entity.FavoriteEvent
 
-class EventViewModel : ViewModel() {
+class EventViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
     private val _listEvent = MutableLiveData<List<ListEventsItem>>()
     val listEvent: LiveData<List<ListEventsItem>> = _listEvent
@@ -53,5 +55,19 @@ class EventViewModel : ViewModel() {
 
     fun clearErrorMessage() {
         _errorMessage.value = null
+    }
+
+    fun getFavoriteEventById(id: String) = eventRepository.getFavoriteEventById(id)
+
+    fun insertFavoriteEvent(event: FavoriteEvent) {
+        viewModelScope.launch {
+            eventRepository.insertFavoriteEvent(event)
+        }
+    }
+
+    fun deleteFavoriteEvent(event: FavoriteEvent) {
+        viewModelScope.launch {
+            eventRepository.deleteFavoriteEvent(event)
+        }
     }
 }
