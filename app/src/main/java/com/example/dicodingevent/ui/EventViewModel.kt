@@ -50,4 +50,8 @@ class EventViewModel : ViewModel() {
             }
         }
     }
+
+    fun clearErrorMessage() {
+        _errorMessage.value = null
+    }
 }

@@ -55,6 +55,7 @@ class ActiveEventFragment : Fragment() {
         eventViewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg != null) {
                 android.widget.Toast.makeText(requireContext(), errorMsg, android.widget.Toast.LENGTH_SHORT).show()
+                eventViewModel.clearErrorMessage()
             }
         }
     }

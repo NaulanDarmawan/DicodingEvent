@@ -45,6 +45,7 @@ class DetailFragment : Fragment() {
         viewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg != null) {
                 android.widget.Toast.makeText(requireContext(), errorMsg, android.widget.Toast.LENGTH_SHORT).show()
+                viewModel.clearErrorMessage()
             }
         }
     }

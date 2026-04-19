@@ -27,7 +27,7 @@ class HomeViewModel : ViewModel() {
         fetchHomeData()
     }
 
-    private fun fetchHomeData() {
+    fun fetchHomeData() {
         _isLoading.value = true
         viewModelScope.launch {
             try {
@@ -52,7 +52,8 @@ class HomeViewModel : ViewModel() {
             try {
                 // Memanggil API dengan active=-1 dan query=keyword
                 val response = ApiConfig.getApiService().getEvents(-1, keyword)
-                _listFinished.value = response.listEvents // Gunakan listFinished agar langsung tampil di list vertikal bawah
+                _listFinished.value =
+                    response.listEvents // Gunakan listFinished agar langsung tampil di list vertikal bawah
             } catch (e: Exception) {
                 _errorMessage.value = "Koneksi internet bermasalah atau data gagal dimuat."
                 Log.e("HomeViewModel", "Error: ${e.message}")
@@ -60,5 +61,9 @@ class HomeViewModel : ViewModel() {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun clearErrorMessage() {
+        _errorMessage.value = null
     }
 }

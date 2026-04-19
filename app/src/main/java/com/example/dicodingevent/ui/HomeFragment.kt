@@ -74,8 +74,18 @@ class HomeFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Opsional: jika text kosong, bisa load ulang fetchHomeData()
-                // agar kembali seperti semula.
+                // Jika teks di kolom pencarian dihapus sampai kosong (atau di-klik silang)
+                if (newText.isNullOrEmpty()) {
+                    // Kembalikan visibilitas Carousel
+                    binding.tvTitleUpcoming.visibility = View.VISIBLE
+                    binding.rvCarousel.visibility = View.VISIBLE
+
+                    // Kembalikan judul list bawah
+                    binding.tvTitleFinished.text = getString(R.string.finished_events)
+
+                    // Muat ulang data default Home (Upcoming & Finished)
+                    homeViewModel.fetchHomeData()
+                }
                 return false
             }
         })
@@ -84,6 +94,7 @@ class HomeFragment : Fragment() {
         homeViewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg != null) {
                 android.widget.Toast.makeText(requireContext(), errorMsg, android.widget.Toast.LENGTH_SHORT).show()
+                homeViewModel.clearErrorMessage()
             }
         }
     }
