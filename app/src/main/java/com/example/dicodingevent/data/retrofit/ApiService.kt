@@ -10,7 +10,8 @@ interface ApiService {
     @GET("events")
     suspend fun getEvents(
         @Query("active") active: Int,
-        @Query("q") q: String? = null
+        @Query("q") q: String? = null,
+        @Query("limit") limit: Int? = null
     ): EventResponse
 
     @GET("events/{id}")
