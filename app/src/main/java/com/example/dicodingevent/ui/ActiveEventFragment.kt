@@ -10,12 +10,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicodingevent.databinding.FragmentActiveEventBinding
 import androidx.navigation.fragment.findNavController
 import com.example.dicodingevent.R
+import androidx.fragment.app.viewModels
 
 class ActiveEventFragment : Fragment() {
 
     private var _binding: FragmentActiveEventBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+
+    private val eventViewModel: EventViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +33,6 @@ class ActiveEventFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val eventViewModel = ViewModelProvider(this)[EventViewModel::class.java]
         val adapter = EventAdapter { event ->
             val bundle = Bundle().apply {
                 putString("eventId", event.id.toString())

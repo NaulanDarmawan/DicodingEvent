@@ -5,17 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicodingevent.databinding.FragmentFinishedEventBinding
 import androidx.navigation.fragment.findNavController
 import com.example.dicodingevent.R
+import kotlin.getValue
+import androidx.fragment.app.viewModels
 
 class FinishedEventFragment : Fragment() {
 
     private var _binding: FragmentFinishedEventBinding? = null
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
+
+    private val eventViewModel: EventViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,7 +35,6 @@ class FinishedEventFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val eventViewModel = ViewModelProvider(this)[EventViewModel::class.java]
         val adapter = EventAdapter { event ->
             val bundle = Bundle().apply {
                 putString("eventId", event.id.toString())

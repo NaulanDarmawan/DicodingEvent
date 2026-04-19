@@ -70,4 +70,6 @@ class EventViewModel(private val eventRepository: EventRepository) : ViewModel()
             eventRepository.deleteFavoriteEvent(event)
         }
     }
+
+    fun getAllFavoriteEvents() = eventRepository.getAllFavoriteEvents()
 }

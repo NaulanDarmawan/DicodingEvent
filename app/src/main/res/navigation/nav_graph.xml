@@ -24,6 +24,12 @@
         android:label="Finished Events" />
 
     <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.example.dicodingevent.ui.FavoriteFragment"
+        android:label="Favorite"
+        tools:layout="@layout/fragment_favorite" />
+
+    <fragment
         android:id="@+id/navigation_detail"
         android:name="com.example.dicodingevent.ui.DetailFragment"
         android:label="Detail Event"
