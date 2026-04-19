@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicodingevent.R
@@ -16,6 +16,11 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    // 🔥 Panggil ViewModel menggunakan Factory
+    private val homeViewModel: HomeViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity())
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
@@ -24,8 +29,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-
         // Setup Adapter Horizontal (Active)
         val carouselAdapter = CarouselAdapter { event ->
             val bundle = Bundle().apply { putString("eventId", event.id.toString()) }
@@ -33,7 +36,7 @@ class HomeFragment : Fragment() {
         }
         binding.rvCarousel.adapter = carouselAdapter
 
-        // Setup Adapter Vertical (Finished) - Kita pakai EventAdapter yang dibuat di Tahap 3
+        // Setup Adapter Vertical (Finished)
         val finishedAdapter = EventAdapter { event ->
             val bundle = Bundle().apply { putString("eventId", event.id.toString()) }
             findNavController().navigate(R.id.navigation_detail, bundle)
@@ -62,35 +65,26 @@ class HomeFragment : Fragment() {
                 if (!query.isNullOrEmpty()) {
                     homeViewModel.searchEvents(query)
 
-                    // Sembunyikan carousel dan ubah judul
                     binding.tvTitleUpcoming.visibility = View.GONE
                     binding.rvCarousel.visibility = View.GONE
                     binding.tvTitleFinished.text = getString(R.string.search_result_format, query)
-
-                    // Tutup keyboard setelah enter
                     binding.searchView.clearFocus()
                 }
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Jika teks di kolom pencarian dihapus sampai kosong (atau di-klik silang)
                 if (newText.isNullOrEmpty()) {
-                    // Kembalikan visibilitas Carousel
                     binding.tvTitleUpcoming.visibility = View.VISIBLE
                     binding.rvCarousel.visibility = View.VISIBLE
-
-                    // Kembalikan judul list bawah
                     binding.tvTitleFinished.text = getString(R.string.finished_events)
-
-                    // Muat ulang data default Home (Upcoming & Finished)
                     homeViewModel.fetchHomeData()
                 }
                 return false
             }
         })
 
-        // Setup Error Handling (Munculkan Toast jika ada error)
+        // Setup Error Handling
         homeViewModel.errorMessage.observe(viewLifecycleOwner) { errorMsg ->
             if (errorMsg != null) {
                 android.widget.Toast.makeText(requireContext(), errorMsg, android.widget.Toast.LENGTH_SHORT).show()

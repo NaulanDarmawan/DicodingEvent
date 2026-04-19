@@ -27,6 +27,14 @@ class EventRepository private constructor(
         return favoriteEventDao.getAllFavoriteEvents()
     }
 
+    // ==========================================
+    // FUNGSI UNTUK MENGAMBIL DATA DARI API (INTERNET)
+    // ==========================================
+
+    suspend fun getEventsFromApi(active: Int, q: String? = null) = apiService.getEvents(active, q)
+
+    suspend fun getDetailEventFromApi(id: String) = apiService.getDetailEvent(id)
+
     companion object {
         @Volatile
         private var instance: EventRepository? = null

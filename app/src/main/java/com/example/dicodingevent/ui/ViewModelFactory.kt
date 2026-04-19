@@ -13,8 +13,10 @@ class ViewModelFactory private constructor(private val eventRepository: EventRep
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(EventViewModel::class.java)) {
             return EventViewModel(eventRepository) as T
+        } else if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
+            // 🔥 Tambahkan baris ini agar HomeViewModel dikenali
+            return HomeViewModel(eventRepository) as T
         }
-        // Nanti kita bisa tambahkan ViewModel lain di sini (seperti SettingViewModel)
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }
 

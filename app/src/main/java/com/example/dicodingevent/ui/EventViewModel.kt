@@ -29,12 +29,14 @@ class EventViewModel(private val eventRepository: EventRepository) : ViewModel()
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = ApiConfig.getApiService().getEvents(active)
+                // Memanggil API lewat Repository
+                val response = eventRepository.getEventsFromApi(active)
                 _listEvent.value = response.listEvents
-            } catch (e: Exception) {
-                _errorMessage.value = "Gagal memuat data. Periksa koneksi internet."
-            } finally {
                 _isLoading.value = false
+            } catch (e: Exception) {
+                // Error Handling jika internet mati atau API gagal (Syarat Bintang 5)
+                _isLoading.value = false
+                _errorMessage.value = "Gagal memuat data: ${e.message}"
             }
         }
     }
@@ -43,12 +45,14 @@ class EventViewModel(private val eventRepository: EventRepository) : ViewModel()
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = ApiConfig.getApiService().getDetailEvent(id)
+                // Memanggil API lewat Repository
+                val response = eventRepository.getDetailEventFromApi(id)
                 _detailEvent.value = response.event
-            } catch (e: Exception) {
-                _errorMessage.value = "Gagal memuat data. Periksa koneksi internet."
-            } finally {
                 _isLoading.value = false
+            } catch (e: Exception) {
+                // Error Handling
+                _isLoading.value = false
+                _errorMessage.value = "Gagal memuat detail: ${e.message}"
             }
         }
     }

@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.dicodingevent.data.EventRepository // Import Repository
 import com.example.dicodingevent.data.response.ListEventsItem
-import com.example.dicodingevent.data.retrofit.ApiConfig
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val eventRepository: EventRepository) : ViewModel() {
 
     private val _listActive = MutableLiveData<List<ListEventsItem>>()
     val listActive: LiveData<List<ListEventsItem>> = _listActive
@@ -31,11 +31,10 @@ class HomeViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                // Panggil 2 API secara asinkron
-                val responseActive = ApiConfig.getApiService().getEvents(1)
-                val responseFinished = ApiConfig.getApiService().getEvents(0)
+                // 🔥 Panggil API lewat Repository
+                val responseActive = eventRepository.getEventsFromApi(1)
+                val responseFinished = eventRepository.getEventsFromApi(0)
 
-                // Ambil maksimal 5 data menggunakan fungsi .take(5)
                 _listActive.value = responseActive.listEvents.take(5)
                 _listFinished.value = responseFinished.listEvents.take(5)
             } catch (e: Exception) {
@@ -50,10 +49,9 @@ class HomeViewModel : ViewModel() {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                // Memanggil API dengan active=-1 dan query=keyword
-                val response = ApiConfig.getApiService().getEvents(-1, keyword)
-                _listFinished.value =
-                    response.listEvents // Gunakan listFinished agar langsung tampil di list vertikal bawah
+                // 🔥 Panggil API lewat Repository dengan keyword
+                val response = eventRepository.getEventsFromApi(-1, keyword)
+                _listFinished.value = response.listEvents
             } catch (e: Exception) {
                 _errorMessage.value = "Koneksi internet bermasalah atau data gagal dimuat."
                 Log.e("HomeViewModel", "Error: ${e.message}")
