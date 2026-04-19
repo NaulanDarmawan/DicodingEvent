@@ -78,6 +78,9 @@ dependencies {
 
     // 7. WorkManager (Untuk fitur Daily Reminder)
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // 🔥 Tambahkan ini untuk fitur Dark Mode
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.2") // Pastikan livedata ktx tersedia
 }
 
 kotlin {
